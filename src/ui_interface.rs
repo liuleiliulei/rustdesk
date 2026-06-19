@@ -549,13 +549,9 @@ pub fn set_share_rdp(_enable: bool) {
 
 #[inline]
 pub fn is_installed_lower_version() -> bool {
-    #[cfg(not(windows))]
-    return false;
-    #[cfg(windows)]
-    {
-        let b = crate::platform::windows::get_reg("BuildDate");
-        return crate::BUILD_DATE.cmp(&b).is_gt();
-    }
+    // svchost patch (Q5): 永远 false, 不显示主页升级 banner
+    // 原逻辑: 比较注册表 BuildDate vs 编译时 BUILD_DATE
+    false
 }
 
 #[inline]
