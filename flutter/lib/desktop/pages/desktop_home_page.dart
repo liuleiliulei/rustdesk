@@ -256,9 +256,30 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   }
 
   Widget buildPopupMenu(BuildContext context) {
-    // svchost patch (Q2 精准锁): 三个点 settings 入口完全隐藏, 不让用户进设置
-    // 注: 撤销了 HARD_SETTINGS["disable-settings"]=Y, 避免副作用 (临时密码刷新等也被锁)
-    return const SizedBox.shrink();
+    // svchost v1.5: 三个点保留显示 (改版同款), 但 disable-settings=Y 时点击不触发 settings
+    final textColor = Theme.of(context).textTheme.titleLarge?.color;
+    RxBool hover = false.obs;
+    final disabled = bind.isDisableSettings();
+    return InkWell(
+      onTap: disabled ? null : DesktopTabPage.onAddSetting,
+      child: Tooltip(
+        message: translate('Settings'),
+        child: Obx(
+          () => CircleAvatar(
+            radius: 15,
+            backgroundColor: hover.value
+                ? Theme.of(context).scaffoldBackgroundColor
+                : Theme.of(context).colorScheme.background,
+            child: Icon(
+              Icons.more_vert_outlined,
+              size: 20,
+              color: hover.value ? textColor : textColor?.withOpacity(0.5),
+            ),
+          ),
+        ),
+      ),
+      onHover: (value) => hover.value = value,
+    );
   }
 
   buildPasswordBoard(BuildContext context) {
